@@ -3,7 +3,6 @@
 	{{ character?.name }} - {{ character?.status }} {{ character?.species }} {{ character?.type }} {{ symbolGender }}
 	Appears in {{ character?.episode.length }} episode{{ character?.episode.length > 1 ? 's' : ''}}
 	{{ character?.origin?.name }} - {{ character?.location?.name }}
-	
 </template>
 
 <script>
@@ -40,7 +39,10 @@ export default {
 		});
 		
 		return {
+			// Refs
 			character,
+			
+			// Computed
 			symbolGender,
 		};
 	}

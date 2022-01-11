@@ -11,27 +11,47 @@
 			</router-link>
 		</template>
 	</div>
+	<paginator v-model="currentPage" :last-page="lastPage" @update:modelValue="loadPage(currentPage)" />
 </template>
 
 <script>
 import { ref } from 'vue';
+import Paginator from './Paginator.vue'
 
 export default {
 	name: 'Characters',
+	components: {
+		Paginator,
+	},
 	setup() {
+		// These informations must be stored
 		const characters = ref([]);
+		const currentPage = ref(1);
+		
+		// This information is only necessary once
+		const lastPage = ref(1);
 	
-		const userAction = async () => {
-			const response = await fetch('https://rickandmortyapi.com/api/character');
+		// Not sure if I should use axios or keep it simple with fetch
+		const loadPage = async (page) => {
+			const response = await fetch('https://rickandmortyapi.com/api/character/?page='+page);
 			const responseJson = await response.json();
 			console.log(responseJson);
 			
-			characters.value = characters.value.concat(responseJson.results);
+			lastPage.value = responseJson.info.pages;
+			
+			//characters.value = characters.value.concat(responseJson.results);
+			characters.value = responseJson.results;
 		}
-		userAction();
+		loadPage(currentPage.value);
 		
 		return {
+			// Refs
 			characters,
+			currentPage,
+			lastPage,
+			
+			// Functions
+			loadPage,
 		};
 	}
 }
