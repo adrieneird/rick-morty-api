@@ -1,4 +1,4 @@
-# jellysmack
+# Rick & Morty Vue3 API Characters
 
 ## Project setup
 ```
