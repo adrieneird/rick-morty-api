@@ -1,14 +1,14 @@
 <template>
 	<div id="paginator-wrapper">
-		<div v-if="currentPage !== 1" @click="changePage(1)">
+		<div v-show="currentPage !== 1" @click="changePage(1)">
 			First
 		</div>
-		<div v-if="currentPage > 3" class="disabled">...</div>
+		<div v-show="currentPage > 3" class="disabled">...</div>
 		<div v-for="displayPage in displayPages" :key="displayPage" @click="changePage(displayPage)" :class="displayPage === currentPage ? 'bold' : ''">
 			{{ displayPage }}
 		</div>
-		<div v-if="currentPage < (lastPage-2)" class="disabled">...</div>
-		<div v-if="currentPage !== lastPage" @click="changePage(lastPage)">
+		<div v-show="currentPage < (lastPage-2)" class="disabled">...</div>
+		<div v-show="currentPage !== lastPage" @click="changePage(lastPage)">
 			Last
 		</div>
 	</div>
