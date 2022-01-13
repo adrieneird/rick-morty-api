@@ -1,9 +1,10 @@
 <template>
 	<div id="searchbar">
 		<input v-model="searchName" type="search" placeholder="rick, morty, jerry, etc" />
-		<button @click="currentPage=1; store.commit('setCurrentPage', currentPage); loadPage();">Search</button>
+		<button @click="currentPage=1; storeSetCurrentPage(); storeSetSearch(); loadPage();">Search</button>
 		<input v-model="searchFilter" type="checkbox" id="search-filter" /> <label for="search-filter">Filter</label>
 		<select v-model="searchStatus">
+			<option value="">any</option>
 			<option value="alive">alive</option>
 			<option value="dead">dead</option>
 			<option value="unknown">unknown</option>
@@ -19,7 +20,7 @@
 			</router-link>
 		</template>
 	</div>
-	<paginator v-model="currentPage" :last-page="lastPage" @update:modelValue="store.commit('setCurrentPage', currentPage); loadPage();" />
+	<paginator v-model="currentPage" :last-page="lastPage" @update:modelValue="storeSetCurrentPage(); loadPage();" />
 </template>
 
 <script>
@@ -37,24 +38,37 @@ export default {
 		const store = useStore();
 		
 		const storeCurrentPage = computed(() => store.getters.getCurrentPage);
+		const storeSearchName = computed(() => store.getters.getSearchName);
+		const storeSearchFilter = computed(() => store.getters.getSearchFilter);
+		const storeSearchStatus = computed(() => store.getters.getSearchStatus);
 	
 		// These informations must be stored
 		const characters = ref([]);
 		const currentPage = ref(storeCurrentPage.value); // Keeping this as the v-model of the paginator to make it reusable
 		const lastPage = ref(1);
 		// Search related
-		const searchName = ref("");
-		const searchFilter = ref(false);
-		const searchStatus = ref("");
+		const searchName = ref(storeSearchName.value);
+		const searchFilter = ref(storeSearchFilter.value);
+		const searchStatus = ref(storeSearchStatus.value);
+	
+		const storeSetCurrentPage = () => {
+			store.commit('setCurrentPage', currentPage.value);
+		};
+	
+		const storeSetSearch = () => {
+			store.commit('setSearchName', searchName.value);
+			store.commit('setSearchFilter', searchFilter.value);
+			store.commit('setSearchStatus', searchStatus.value);
+		};
 	
 		// Relies on a simple fetch instead of axios
 		const loadPage = async () => {
 			let urlQuery = "";
-			if (searchName.value) {
-				urlQuery += `&name=${searchName.value}`;
+			if (storeSearchName.value) {
+				urlQuery += `&name=${storeSearchName.value}`;
 			}
-			if (searchFilter.value && searchStatus.value) {
-				urlQuery += `&status=${searchStatus.value}`;
+			if (storeSearchFilter.value && storeSearchStatus.value) {
+				urlQuery += `&status=${storeSearchStatus.value}`;
 			}
 		
 			const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${storeCurrentPage.value}${urlQuery}`);
@@ -67,6 +81,8 @@ export default {
 			//characters.value = characters.value.concat(responseJson.results);
 			characters.value = responseJson.results;
 		};
+		
+		// First load
 		loadPage();
 		
 		return {
@@ -83,6 +99,8 @@ export default {
 			
 			// Functions
 			loadPage,
+			storeSetSearch,
+			storeSetCurrentPage,
 		};
 	}
 }

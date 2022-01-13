@@ -12,6 +12,11 @@ const currentPageStore = {
             return state.currentPage;
         },
     },
+    actions: {
+        setCurrentPage({ commit }, currentPage) {
+            commit('setCurrentPage', currentPage.data);
+        },
+    },
 };
 
 export default currentPageStore;
