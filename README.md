@@ -1,5 +1,8 @@
 # Rick & Morty Vue3 API Characters
 
+This project embraces KISS philosophy.
+Instead of using axios, it uses a simple fetch().
+
 ## Project setup
 ```
 npm install
