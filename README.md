@@ -5,6 +5,10 @@ Instead of using axios, it uses a simple fetch().
 
 Could've used localStorage instead of store for simpler stuff (currentPage & search).
 
+Can be improved by :
+- Not cleaning the store at each search
+- Store images as base64 instead of relying on browser cache
+
 ## Project setup
 ```
 npm install

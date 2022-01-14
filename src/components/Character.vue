@@ -1,8 +1,35 @@
 <template>
-	<img :src="character?.image" />
-	{{ character?.name }} - {{ character?.status }} {{ character?.species }} {{ character?.type }} {{ symbolGender }}
-	Appears in {{ character?.episode?.length }} episode{{ character?.episode?.length > 1 ? 's' : ''}}
-	{{ character?.origin?.name }} - {{ character?.location?.name }}
+	<div id="character-card">
+		<div id="character-top-bar">
+			<div id="character-name">
+				{{ character?.name }}
+			</div>
+			<div id="character-gender">
+				{{ symbolGender }}
+			</div>
+		</div>
+		<img :src="character?.image" />
+		<div id="character-type">
+			<div>
+				{{ character?.species }}<span v-if="character?.type"> - {{ character?.type }}</span>
+			</div>
+			<div>
+				{{ character?.status }}
+			</div>
+		</div>
+		<div id="character-desc">
+			<div>
+				Appears in {{ character?.episode?.length }} episode{{ character?.episode?.length > 1 ? 's' : ''}}
+			</div>
+			
+			Location
+			<ul>
+				<li>Origin : {{ character?.origin?.name }}</li>
+				<li>Current : {{ character?.location?.name }}</li>
+			</ul>
+			
+		</div>
+	</div>
 </template>
 
 <script>
@@ -63,3 +90,39 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+	#character-card {
+		width: 300px;
+		margin: auto;
+		border: 8px solid #CCC;
+		border-radius: 8px;
+		background-color: #EEE;
+		text-align: left;
+	}
+	
+	#character-top-bar, #character-type {
+		display: flex;
+		justify-content: space-between;
+		margin: 4px;
+		padding: 4px;
+		border: 2px solid #CCC;
+		border-radius: 4px;
+		background-color: #FEFEFE;
+	}
+	
+	#character-desc {
+		font-style: italic;
+		padding: 4px;
+	}
+	
+	#character-desc > * {
+		margin: 8px 0;
+	}
+	
+	ul, li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+</style>

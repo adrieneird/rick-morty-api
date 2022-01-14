@@ -2,7 +2,9 @@
 	<div id="searchbar">
 		<input v-model="searchName" type="search" placeholder="rick, morty, jerry, etc" />
 		<button @click="currentPage=1; storeSetCurrentPage(); storeSetSearch(); loadPage();">Search</button>
-		<input v-model="searchFilter" type="checkbox" id="search-filter" /> <label for="search-filter">Filter</label>
+		<div>
+			<input v-model="searchFilter" type="checkbox" id="search-filter" /> <label for="search-filter">Filter</label>
+		</div>
 		<select v-model="searchStatus">
 			<option value="">any</option>
 			<option value="alive">alive</option>
@@ -140,4 +142,20 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
+
+#searchbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin: 16px 0;
+	justify-content: center;
+	align-items: center;
+}
+
+#searchbar input[type="search"] {
+	box-sizing: border-box;
+	padding: 4px;
+	font-size: 16px;
+}
+
 </style>
