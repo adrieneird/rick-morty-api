@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex'
 import Paginator from './Paginator.vue'
 
@@ -35,14 +35,19 @@ export default {
 	},
 	setup() {
 		// Store
+		
 		const store = useStore();
 		
 		const storeCurrentPage = computed(() => store.getters.getCurrentPage);
 		const storeSearchName = computed(() => store.getters.getSearchName);
 		const storeSearchFilter = computed(() => store.getters.getSearchFilter);
 		const storeSearchStatus = computed(() => store.getters.getSearchStatus);
+		
+		const storeCharacters = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value, storeSearchName.value, storeSearchFilter.value, storeSearchStatus.value));
+		const storeCharactersCount = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value, storeSearchName.value, storeSearchFilter.value, storeSearchStatus.value));
 	
-		// These informations must be stored
+		// Refs
+	
 		const characters = ref([]);
 		const currentPage = ref(storeCurrentPage.value); // Keeping this as the v-model of the paginator to make it reusable
 		const lastPage = ref(1);
@@ -50,6 +55,8 @@ export default {
 		const searchName = ref(storeSearchName.value);
 		const searchFilter = ref(storeSearchFilter.value);
 		const searchStatus = ref(storeSearchStatus.value);
+	
+		// Functions
 	
 		const storeSetCurrentPage = () => {
 			store.commit('setCurrentPage', currentPage.value);
@@ -59,6 +66,9 @@ export default {
 			store.commit('setSearchName', searchName.value);
 			store.commit('setSearchFilter', searchFilter.value);
 			store.commit('setSearchStatus', searchStatus.value);
+			
+			// Clear current store since it'll mess up pages
+			store.commit('clearCharacters');
 		};
 	
 		// Relies on a simple fetch instead of axios
@@ -70,20 +80,31 @@ export default {
 			if (storeSearchFilter.value && storeSearchStatus.value) {
 				urlQuery += `&status=${storeSearchStatus.value}`;
 			}
-		
-			const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${storeCurrentPage.value}${urlQuery}`);
-			const responseJson = await response.json();
-			console.log(responseJson);
 			
-			// In case of change in the query, the last page number must be updated
-			lastPage.value = responseJson.info.pages;
-			
-			//characters.value = characters.value.concat(responseJson.results);
-			characters.value = responseJson.results;
+			if ((storeCharactersCount.value < 20 && storeCurrentPage.value !== lastPage.value) || (storeCurrentPage.value === lastPage.value)) {
+				// Less than 20 characters and not on last page => must fetch
+				// Last page, can't know length => must fetch
+				
+				const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${storeCurrentPage.value}${urlQuery}`);
+				const responseJson = await response.json();
+				
+				store.commit('addCharacters', { characters: responseJson.results, page: storeCurrentPage.value });
+				
+				// In case of change in the query, the last page number must be updated
+				lastPage.value = responseJson.info.pages;
+				
+				characters.value = responseJson.results;
+			} else {
+				// 20 characters and not on last page => no need to fetch
+				
+				characters.value = storeCharacters.value;
+			}
 		};
 		
-		// First load
-		loadPage();
+		onMounted(() => {
+			// First load
+			loadPage();
+		});
 		
 		return {
 			// Store

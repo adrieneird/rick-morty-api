@@ -3,6 +3,8 @@
 This project embraces KISS philosophy.
 Instead of using axios, it uses a simple fetch().
 
+Could've used localStorage instead of store for simpler stuff (currentPage & search).
+
 ## Project setup
 ```
 npm install

@@ -1,5 +1,5 @@
 {
-  "name": "jellysmack",
+  "name": "Rick & Morty API - Vue 3 Characters viewer",
   "version": "0.1.0",
   "private": true,
   "scripts": {
