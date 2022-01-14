@@ -19,7 +19,7 @@
 		</div>
 		<div id="character-desc">
 			<div>
-				Appears in {{ character?.episode?.length }} episode{{ character?.episode?.length > 1 ? 's' : ''}}
+				Appears in <strong>{{ character?.episode?.length }}</strong> episode{{ character?.episode?.length > 1 ? 's' : ''}}
 			</div>
 			
 			Location
@@ -113,7 +113,7 @@ export default {
 	
 	#character-desc {
 		font-style: italic;
-		padding: 4px;
+		padding: 10px;
 	}
 	
 	#character-desc > * {

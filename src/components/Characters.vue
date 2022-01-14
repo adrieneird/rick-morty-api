@@ -141,6 +141,28 @@ export default {
 #characters div {
 	display: flex;
 	flex-direction: column;
+	background-color: #EEE;
+	border-radius: 8px;
+	transform: scale(1);
+	transition: all ease-in-out 0.2s;
+}
+
+#characters div img {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+#characters div:hover {
+	transform: scale(1.05);
+}
+
+#characters a {
+	color: black;
+	text-decoration: none;
+}
+
+#characters a:hover {
+	text-decoration: underline;
 }
 
 #searchbar {
