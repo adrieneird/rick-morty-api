@@ -20,7 +20,7 @@
 			</router-link>
 		</template>
 	</div>
-	<paginator v-model="currentPage" :last-page="lastPage" @update:modelValue="storeSetCurrentPage(); loadPage();" />
+	<paginator v-model="currentPage" :last-page="storeLastPage" @update:modelValue="storeSetCurrentPage(); loadPage();" />
 </template>
 
 <script>
@@ -39,6 +39,8 @@ export default {
 		const store = useStore();
 		
 		const storeCurrentPage = computed(() => store.getters.getCurrentPage);
+		const storeLastPage = computed(() => store.getters.getLastPage);
+		
 		const storeSearchName = computed(() => store.getters.getSearchName);
 		const storeSearchFilter = computed(() => store.getters.getSearchFilter);
 		const storeSearchStatus = computed(() => store.getters.getSearchStatus);
@@ -50,7 +52,6 @@ export default {
 	
 		const characters = ref([]);
 		const currentPage = ref(storeCurrentPage.value); // Keeping this as the v-model of the paginator to make it reusable
-		const lastPage = ref(1);
 		// Search related
 		const searchName = ref(storeSearchName.value);
 		const searchFilter = ref(storeSearchFilter.value);
@@ -81,7 +82,7 @@ export default {
 				urlQuery += `&status=${storeSearchStatus.value}`;
 			}
 			
-			if ((storeCharactersCount.value < 20 && storeCurrentPage.value !== lastPage.value) || (storeCurrentPage.value === lastPage.value)) {
+			if ((storeCharactersCount.value < 20 && storeCurrentPage.value !== storeLastPage.value) || (storeCurrentPage.value === storeLastPage.value)) {
 				// Less than 20 characters and not on last page => must fetch
 				// Last page, can't know length => must fetch
 				
@@ -91,7 +92,7 @@ export default {
 				store.commit('addCharacters', { characters: responseJson.results, page: storeCurrentPage.value });
 				
 				// In case of change in the query, the last page number must be updated
-				lastPage.value = responseJson.info.pages;
+				store.commit('setLastPage', responseJson.info.pages);
 				
 				characters.value = responseJson.results;
 			} else {
@@ -113,7 +114,7 @@ export default {
 			// Refs
 			characters,
 			currentPage,
-			lastPage,
+			storeLastPage,
 			searchName,
 			searchFilter,
 			searchStatus,

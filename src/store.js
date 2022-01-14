@@ -1,13 +1,13 @@
 import { createStore } from 'vuex'
 
 // Stores
-import currentPageStore from './stores/currentPage.js';
+import pagesStore from './stores/pages.js';
 import searchStore from './stores/search.js';
 import characters from './stores/characters.js';
 
 const store = createStore({
 	modules: {
-		currentPageStore,
+		pagesStore,
 		searchStore,
 		characters,
 	},
