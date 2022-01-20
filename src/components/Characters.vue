@@ -53,7 +53,6 @@ export default {
 	
 		// Relies on a simple fetch instead of axios
 		const loadPage = async () => {
-			console.log(urlQuery.value);
 			if ((storeCharactersCount.value < 20 && storeCurrentPage.value !== storeLastPage.value) || (storeCurrentPage.value === storeLastPage.value)) {
 				// Less than 20 characters and not on last page => must fetch
 				// Last page, can't know length => must fetch

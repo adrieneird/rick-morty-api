@@ -49,7 +49,6 @@ export default {
 		};
 		
 		const urlQuery = computed(() => {
-			console.log(storeSearchName.value);
 			let urlQuery = "";
 			if (storeSearchName.value) {
 				urlQuery += `&name=${storeSearchName.value}`;
