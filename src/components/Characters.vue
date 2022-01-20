@@ -5,7 +5,7 @@
 		<div>
 			<input v-model="searchFilter" type="checkbox" id="search-filter" /> <label for="search-filter">Filter</label>
 		</div>
-		<select v-model="searchStatus">
+		<select v-model="searchStatus" @change="!searchStatus ? searchFilter=false : searchFilter=true;">
 			<option value="">any</option>
 			<option value="alive">alive</option>
 			<option value="dead">dead</option>
