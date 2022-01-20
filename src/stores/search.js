@@ -5,13 +5,13 @@ const searchStore = {
 		searchStatus: "",
     }),
     mutations: {
-        setSearchName(state, { searchName }) {
+        setSearchName(state, searchName) {
             state.searchName = searchName;
         },
-		setSearchFilter(state, { searchFilter }) {
+		setSearchFilter(state, searchFilter) {
             state.searchFilter = searchFilter;
         },
-		setSearchStatus(state, { searchStatus }) {
+		setSearchStatus(state, searchStatus) {
             state.searchStatus = searchStatus;
         },
     },
@@ -28,9 +28,9 @@ const searchStore = {
     },
 	actions: {
 		setSearch({ commit }, { searchName, searchFilter, searchStatus }) {
-			commit('setSearchName', { searchName });
-			commit('setSearchFilter', { searchFilter });
-			commit('setSearchStatus', { searchStatus });
+			commit('setSearchName', searchName);
+			commit('setSearchFilter', searchFilter);
+			commit('setSearchStatus', searchStatus);
 			
 			// Clear current store since it'll mess up pages
 			commit('clearCharacters');
