@@ -25,43 +25,13 @@ const charactersStore = {
         getCharacterById: (state) => (id) => {
             return state.characters.find(character => character.id === id);
         },
-		getCharactersByPage: (state) => (page, searchName, searchFilter, searchStatus) => {
+		getCharactersByPage: (state) => (page) => {
 			// Simple version since we clear the store after each search
 			return state.characters.filter(character => character.page === page);
-			/*
-			if (!searchName && (!searchFilter || !searchStatus)) {
-				return state.characters.filter(character => character.page === page);
-			} else {
-				if (searchName && searchFilter && searchStatus) {
-					return state.characters.filter(character => character.page === page && character.status === searchStatus && character.name.includes(searchName));
-				} else if (searchName) {
-					return state.characters.filter(character => character.page === page && character.name.includes(searchName));
-				} else if (searchFilter && searchStatus) {
-					return state.characters.filter(character => character.page === page && character.status === searchStatus);
-				} else {
-					return null;
-				}
-			}
-			*/
 		},
-		getCountCharactersPerPage: (state) => (page, searchName, searchFilter, searchStatus) => {
+		getCountCharactersPerPage: (state) => (page) => {
 			// Simple version since we clear the store after each search
 			return state.characters.filter(character => character.page === page).length;
-			/*
-			if (!searchName && (!searchFilter || !searchStatus)) {
-				return state.characters.filter(character => character.page === page).length;
-			} else {
-				if (searchName && searchFilter && searchStatus) {
-					return state.characters.filter(character => character.page === page && character.status === searchStatus && character.name.includes(searchName)).length;
-				} else if (searchName) {
-					return state.characters.filter(character => character.page === page && character.name.includes(searchName)).length;
-				} else if (searchFilter && searchStatus) {
-					return state.characters.filter(character => character.page === page && character.status === searchStatus).length;
-				} else {
-					return 0;
-				}
-			}
-			*/
 		},
     },
 };

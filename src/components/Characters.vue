@@ -1,17 +1,5 @@
 <template>
-	<div id="searchbar">
-		<input v-model="searchName" type="search" placeholder="rick, morty, jerry, etc" />
-		<button @click="currentPage=1; storeSetCurrentPage(); storeSetSearch(); loadPage();">Search</button>
-		<div>
-			<input v-model="searchFilter" type="checkbox" id="search-filter" /> <label for="search-filter">Filter</label>
-		</div>
-		<select v-model="searchStatus" @change="!searchStatus ? searchFilter=false : searchFilter=true;">
-			<option value="">any</option>
-			<option value="alive">alive</option>
-			<option value="dead">dead</option>
-			<option value="unknown">unknown</option>
-		</select>
-	</div>
+	<characters-searchbar v-model="urlQuery" @update:modelValue="currentPage=1; storeSetCurrentPage(); loadPage();" />
 	<div id="characters">
 		<template v-for="character in characters" :key="character.id">
 			<router-link :to="{ name: 'Character', params: { id: character.id }}">
@@ -29,13 +17,17 @@
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex'
 import Paginator from './Paginator.vue'
+import CharactersSearchbar from './CharactersSearchbar.vue'
 
 export default {
 	name: 'Characters',
 	components: {
 		Paginator,
+		CharactersSearchbar,
 	},
 	setup() {
+		const baseUrl = 'https://rickandmortyapi.com/api/character/';
+	
 		// Store
 		
 		const store = useStore();
@@ -43,21 +35,15 @@ export default {
 		const storeCurrentPage = computed(() => store.getters.getCurrentPage);
 		const storeLastPage = computed(() => store.getters.getLastPage);
 		
-		const storeSearchName = computed(() => store.getters.getSearchName);
-		const storeSearchFilter = computed(() => store.getters.getSearchFilter);
-		const storeSearchStatus = computed(() => store.getters.getSearchStatus);
 		
-		const storeCharacters = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value, storeSearchName.value, storeSearchFilter.value, storeSearchStatus.value));
-		const storeCharactersCount = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value, storeSearchName.value, storeSearchFilter.value, storeSearchStatus.value));
+		const storeCharacters = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value));
+		const storeCharactersCount = computed(() => store.getters.getCharactersByPage(storeCurrentPage.value));
 	
 		// Refs
 	
 		const characters = ref([]);
 		const currentPage = ref(storeCurrentPage.value); // Keeping this as the v-model of the paginator to make it reusable
-		// Search related
-		const searchName = ref(storeSearchName.value);
-		const searchFilter = ref(storeSearchFilter.value);
-		const searchStatus = ref(storeSearchStatus.value);
+		const urlQuery = ref(''); // Search related
 	
 		// Functions
 	
@@ -65,30 +51,13 @@ export default {
 			store.commit('setCurrentPage', currentPage.value);
 		};
 	
-		const storeSetSearch = () => {
-			store.commit('setSearchName', searchName.value);
-			store.commit('setSearchFilter', searchFilter.value);
-			store.commit('setSearchStatus', searchStatus.value);
-			
-			// Clear current store since it'll mess up pages
-			store.commit('clearCharacters');
-		};
-	
 		// Relies on a simple fetch instead of axios
 		const loadPage = async () => {
-			let urlQuery = "";
-			if (storeSearchName.value) {
-				urlQuery += `&name=${storeSearchName.value}`;
-			}
-			if (storeSearchFilter.value && storeSearchStatus.value) {
-				urlQuery += `&status=${storeSearchStatus.value}`;
-			}
-			
 			if ((storeCharactersCount.value < 20 && storeCurrentPage.value !== storeLastPage.value) || (storeCurrentPage.value === storeLastPage.value)) {
 				// Less than 20 characters and not on last page => must fetch
 				// Last page, can't know length => must fetch
 				
-				const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${storeCurrentPage.value}${urlQuery}`);
+				const response = await fetch(`${baseUrl}?page=${storeCurrentPage.value}${urlQuery.value}`);
 				const responseJson = await response.json();
 				
 				store.commit('addCharacters', { characters: responseJson.results, page: storeCurrentPage.value });
@@ -117,13 +86,10 @@ export default {
 			characters,
 			currentPage,
 			storeLastPage,
-			searchName,
-			searchFilter,
-			searchStatus,
+			urlQuery,
 			
 			// Functions
 			loadPage,
-			storeSetSearch,
 			storeSetCurrentPage,
 		};
 	}
@@ -163,21 +129,6 @@ export default {
 
 #characters a:hover {
 	text-decoration: underline;
-}
-
-#searchbar {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 16px;
-	margin: 16px 0;
-	justify-content: center;
-	align-items: center;
-}
-
-#searchbar input[type="search"] {
-	box-sizing: border-box;
-	padding: 4px;
-	font-size: 16px;
 }
 
 </style>

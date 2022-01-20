@@ -43,6 +43,8 @@ export default {
         id: Number,
     },
 	setup(props) {
+		const baseUrl = 'https://rickandmortyapi.com/api/character/';
+	
 		// Router
 		const router = useRouter();
 	
@@ -53,7 +55,7 @@ export default {
 		const storeCharacter = computed(() => store.getters.getCharacterById(props.id));
 	
 		const getCharacter = async () => {
-			const response = await fetch(`https://rickandmortyapi.com/api/character/${props.id}`);
+			const response = await fetch(`${baseUrl}${props.id}`);
 			
 			// In case of error
 			if (!response.ok) {
