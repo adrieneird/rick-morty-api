@@ -34,6 +34,7 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex'
 
 export default {
@@ -42,6 +43,9 @@ export default {
         id: Number,
     },
 	setup(props) {
+		// Router
+		const router = useRouter();
+	
 		// Store
 		const store = useStore();
 	
@@ -50,6 +54,12 @@ export default {
 	
 		const getCharacter = async () => {
 			const response = await fetch(`https://rickandmortyapi.com/api/character/${props.id}`);
+			
+			// In case of error
+			if (!response.ok) {
+				router.push({ name: 'Characters' });
+			}
+			
 			const responseJson = await response.json();
 			
 			// Add character to store
