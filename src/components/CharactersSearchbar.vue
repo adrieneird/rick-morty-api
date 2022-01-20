@@ -43,17 +43,13 @@ export default {
 		// Functions
 	
 		const storeSetSearch = () => {
-			store.commit('setSearchName', searchName.value);
-			store.commit('setSearchFilter', searchFilter.value);
-			store.commit('setSearchStatus', searchStatus.value);
-			
-			// Clear current store since it'll mess up pages
-			store.commit('clearCharacters');
-			
-			emit('update:modelValue', urlQuery.value);
+			store.dispatch('setSearch', { searchName: searchName.value, searchFilter: searchFilter.value, searchStatus: searchStatus.value, }).then(
+				emit('update:modelValue', urlQuery.value)
+			);
 		};
 		
 		const urlQuery = computed(() => {
+			console.log(storeSearchName.value);
 			let urlQuery = "";
 			if (storeSearchName.value) {
 				urlQuery += `&name=${storeSearchName.value}`;
